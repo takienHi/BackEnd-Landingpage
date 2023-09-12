@@ -1,0 +1,26 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "admin/.vscode": true,
+    "admin/node_modules": true,
+    "server/node_modules": true,
+    "admin/.gitignore": true,
+    "admin/postcss.config.cjs": true,
+    "admin/yarn.lock": true,
+    "server/.gitignore": true
+  },
+  "hide-files.files": [
+    "admin/.vscode",
+    "admin/node_modules",
+    "server/node_modules",
+    "admin/.gitignore",
+    "admin/postcss.config.cjs",
+    "admin/yarn.lock",
+    "server/.gitignore"
+  ]
+}

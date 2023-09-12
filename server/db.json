@@ -1,0 +1,417 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "fullName": "Tạ Phong Kiên",
+      "userName": "admin",
+      "email": "admin@admin",
+      "role": "admin",
+      "password": "123456",
+      "status": "active"
+    }
+  ],
+  "logo": {
+    "desktop": {
+      "while": "desktop while",
+      "dark": "desktop dark"
+    },
+    "mobile": {
+      "while": "mobile while",
+      "dark": "mobile dark"
+    },
+    "favicon": "favicon"
+  },
+  "menus": [
+    {
+      "id": 1,
+      "name": "Home",
+      "path": "/",
+      "status": "active",
+      "hasChildren": false
+    },
+    {
+      "id": 2,
+      "name": "Pages",
+      "path": "",
+      "status": "active",
+      "hasChildren": true
+    },
+    {
+      "id": 3,
+      "name": "Explore",
+      "path": "",
+      "status": "active",
+      "hasChildren": true
+    },
+    {
+      "id": 4,
+      "name": "Resources",
+      "path": "",
+      "status": "active",
+      "hasChildren": true
+    },
+    {
+      "id": 5,
+      "name": "Create",
+      "path": "",
+      "status": "disabled",
+      "hasChildren": false
+    }
+  ],
+  "sub_menu": [
+    {
+      "id": 1,
+      "name": "Maintenance",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 2,
+      "name": "Case Studies",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 3,
+      "name": "Single Case Study",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 4,
+      "name": "Careers",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 5,
+      "name": "Item Details",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 6,
+      "name": "Explore Collections",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 7,
+      "name": "Collection",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 8,
+      "name": "Activity",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 9,
+      "name": "Rankings",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 10,
+      "name": "User",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 11,
+      "name": "Edit Profile",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 12,
+      "name": "About",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 13,
+      "name": "Contact",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 14,
+      "name": "Wallet",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 15,
+      "name": "Login",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 16,
+      "name": "Page 404",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 17,
+      "name": "Terms of Service",
+      "path": "",
+      "status": "active",
+      "menuId": 2
+    },
+    {
+      "id": 18,
+      "name": "All NFTs",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 19,
+      "name": "Photography",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 20,
+      "name": "Art",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 21,
+      "name": "Sports",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 22,
+      "name": "Collectibles",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 23,
+      "name": "Trading Cards",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 24,
+      "name": "Domain Names",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 25,
+      "name": "Utility",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 26,
+      "name": "Virtual Worlds",
+      "path": "",
+      "status": "active",
+      "menuId": 3
+    },
+    {
+      "id": 27,
+      "name": "Help Center",
+      "path": "",
+      "status": "active",
+      "menuId": 4
+    },
+    {
+      "id": 28,
+      "name": "Platform Status",
+      "path": "",
+      "status": "active",
+      "menuId": 4
+    },
+    {
+      "id": 30,
+      "name": "Partners",
+      "path": "",
+      "status": "active",
+      "menuId": 4
+    },
+    {
+      "id": 31,
+      "name": "Blog",
+      "path": "",
+      "status": "active",
+      "menuId": 4
+    },
+    {
+      "id": 32,
+      "name": "Single Post",
+      "path": "",
+      "status": "active",
+      "menuId": 4
+    },
+    {
+      "id": 33,
+      "name": "Newsletter",
+      "path": "",
+      "status": "active",
+      "menuId": 4
+    }
+  ],
+  "menu_footers": [
+    {
+      "id": 1,
+      "name": "Marketplace",
+      "path": "/",
+      "status": "active",
+      "hasChildren": true
+    },
+    {
+      "id": 2,
+      "name": "Company",
+      "path": "",
+      "status": "active",
+      "hasChildren": true
+    },
+    {
+      "id": 3,
+      "name": "My Account",
+      "path": "",
+      "status": "active",
+      "hasChildren": true
+    }
+  ],
+  "sub_menu_footer": [
+    {
+      "id": 1,
+      "name": "All NFTs",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 1
+    },
+    {
+      "id": 2,
+      "name": "Art",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 1
+    },
+    {
+      "id": 3,
+      "name": "Music",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 1
+    },
+    {
+      "id": 4,
+      "name": "Domain Names",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 1
+    },
+    {
+      "id": 5,
+      "name": "Collectibles",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 1
+    },
+    {
+      "id": 6,
+      "name": "Virtual World",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 1
+    },
+    {
+      "id": 7,
+      "name": "Explore",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 8,
+      "name": "About",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 9,
+      "name": "Contact Us",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 10,
+      "name": "Our Blog",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 11,
+      "name": "FAQ",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 12,
+      "name": "Authors",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 13,
+      "name": "Collection",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 14,
+      "name": "Author Profile",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    },
+    {
+      "id": 15,
+      "name": "Create Item",
+      "path": "",
+      "status": "active",
+      "menu_footerId": 2
+    }
+  ]
+}
