@@ -15,31 +15,41 @@ import Layout from './layout/Layout';
 import HeroImages from './pages/heroImages';
 import paths from './constant/paths';
 import HeaderManager from './pages/mainLayout/header-manager/header-manager';
-import FooterManager from './pages/mainLayout/footer-manager';
+import FooterManager from './pages/mainLayout/footer-manager/footer-manager';
+import MainLayout from './pages/mainLayout/MainLayout';
+import { CheckAuth, ProtectedRoute, RejectedRoute } from './routes/RouteCheck';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <main className='App relative'>
+      <ToastContainer />
       <Routes>
-        <Route path='/' element={<Navigate to={paths.login.link} />} />
-        <Route
-          path={paths.login.link}
-          element={
-            <Suspense fallback={<Loading />}>
-              <Login3 />
-            </Suspense>
-          }
-        />
-        <Route path='/*' element={<Layout />}>
-          <Route path={paths.dashboard.link} element={<Dashboard />} />
-          <Route path={paths.section_hero.link} element={<HeroImages />} />
-          <Route path={paths.section_partners.link} element={<HeroImages />} />
-          <Route path={paths.section_subscribe.link} element={<HeroImages />} />
-          <Route path={paths.header.link} element={<HeaderManager />} />
-          <Route path={paths.footer.link} element={<FooterManager />} />
-          <Route path={paths.logo_website.link} element={<LogoWebsite />} />
+        <Route path='/' element={<CheckAuth />} />
+        <Route path='/' element={<RejectedRoute />}>
+          <Route
+            path={paths.login.link}
+            element={
+              <Suspense fallback={<Loading />}>
+                <Login3 />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route path='/' element={<ProtectedRoute />}>
+          <Route path='/*' element={<Layout />}>
+            <Route path={paths.dashboard.link} element={<Dashboard />} />
+            <Route path={paths.section_hero.link} element={<HeroImages />} />
+            <Route path={paths.section_partners.link} element={<HeroImages />} />
+            <Route path={paths.section_subscribe.link} element={<HeroImages />} />
+            <Route path={paths.main_layout.link} element={<MainLayout />} />
 
-          <Route path='*' element={<Navigate to='/404' replace />} />
+            <Route path={paths.header.link} element={<HeaderManager />} />
+            <Route path={paths.footer.link} element={<FooterManager />} />
+            <Route path={paths.logo_website.link} element={<LogoWebsite />} />
+
+            <Route path='*' element={<Navigate to='/404' replace />} />
+          </Route>
         </Route>
         <Route
           path='/404'

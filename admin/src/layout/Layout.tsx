@@ -1,23 +1,21 @@
-import { Suspense, useRef } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
 import Header from 'src/components/partials/header';
 import Sidebar from 'src/components/partials/sidebar';
 import Settings from 'src/components/partials/settings';
 import useWidth from 'src/hooks/useWidth';
 import useSidebar from 'src/hooks/useSidebar';
 import useContentWidth from 'src/hooks/useContentWidth';
-import useMenulayout from 'src/hooks/useMenulayout';
+import useMenuLayout from 'src/hooks/useMenulayout';
 import useMenuHidden from 'src/hooks/useMenuHidden';
 import Breadcrumbs from 'src/components/ui/Breadcrumbs';
 import MobileMenu from '../components/partials/sidebar/MobileMenu';
 import useMobileMenu from 'src/hooks/useMobileMenu';
-import { ToastContainer } from 'react-toastify';
 import Loading from 'src/components/Loading';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 const Layout = () => {
   const { width, breakpoints } = useWidth();
   const [collapsed] = useSidebar();
-  const navigate = useNavigate();
 
   const switchHeaderClass = () => {
     if (menuType === 'horizontal' || menuHidden) {
@@ -30,15 +28,13 @@ const Layout = () => {
   };
   // content width
   const [contentWidth] = useContentWidth();
-  const [menuType] = useMenulayout();
+  const [menuType] = useMenuLayout();
   const [menuHidden] = useMenuHidden();
   // mobile menu
   const [mobileMenu, setMobileMenu] = useMobileMenu();
-  const nodeRef = useRef(null);
 
   return (
     <>
-      <ToastContainer />
       <Header className={width > breakpoints.xl ? switchHeaderClass() : ''} />
       {menuType === 'vertical' && width > breakpoints.xl && !menuHidden && <Sidebar />}
 

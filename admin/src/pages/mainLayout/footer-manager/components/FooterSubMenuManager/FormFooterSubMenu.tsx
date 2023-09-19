@@ -3,21 +3,21 @@ import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { SubMenuSchema, subMenuSchema } from 'src/schema/SubMenuSchema';
-import { SubMenuType } from 'src/types/SubMenuType';
+import { SubMenuFooterSchema, subMenuFooterSchema } from 'src/schema/FooterSubMenuSchema';
+import { FooterSubMenuType } from 'src/types/FooterSubMenuType';
 import { useEffect, useState } from 'react';
 import MenuApi from 'src/apis/menu.api';
 import { MenuType } from 'src/types/MenuType';
 
-type FormData = Omit<SubMenuSchema, 'id'>;
-const addSubMenuSchema = subMenuSchema.omit(['id']);
+type FormData = Omit<SubMenuFooterSchema, 'id'>;
+const addSubMenuSchema = subMenuFooterSchema.omit(['id']);
 
-type FormSubMenuProps = {
+type FormFooterSubMenuProps = {
   handleOnSubmit: (formValues: any) => boolean;
-  currentMenuItem?: SubMenuType | null;
+  currentMenuItem?: FooterSubMenuType | null;
 };
 
-const FormSubMenu = ({ handleOnSubmit, currentMenuItem }: FormSubMenuProps) => {
+const FormFooterSubMenu = ({ handleOnSubmit, currentMenuItem }: FormFooterSubMenuProps) => {
   const [menuParentOptions, setMenuParentOptions] = useState<MenuType[]>([]);
 
   const getMenu = () => {
@@ -71,11 +71,11 @@ const FormSubMenu = ({ handleOnSubmit, currentMenuItem }: FormSubMenuProps) => {
         name: currentMenuItem.name,
         path: currentMenuItem.path,
         status: currentMenuItem.status,
-        menuId: Number(currentMenuItem.menuId),
+        menu_footerId: Number(currentMenuItem.menu_footerId),
       };
       resetEdit({ ...defaultValues });
     } else {
-      let defaultValues: FormData = { name: '', path: '', status: 'active', menuId: 1 };
+      let defaultValues: FormData = { name: '', path: '', status: 'active', menu_footerId: 1 };
       resetAdd({ ...defaultValues });
     }
   }, []);
@@ -88,12 +88,12 @@ const FormSubMenu = ({ handleOnSubmit, currentMenuItem }: FormSubMenuProps) => {
     <>
       {!currentMenuItem && (
         <form onSubmit={handleAddSubmit(onAddSubmit)} className='space-y-4 '>
-          <div className={errorsAdd.menuId ? 'has-error' : ''}>
+          <div className={errorsAdd.menu_footerId ? 'has-error' : ''}>
             <label className='form-label' htmlFor='menuId_s'>
               Menu Parent
             </label>
             <Controller
-              name='menuId'
+              name='menu_footerId'
               control={controlAdd}
               render={({ field: { value, onBlur, onChange, ref } }) => (
                 <Select
@@ -113,8 +113,8 @@ const FormSubMenu = ({ handleOnSubmit, currentMenuItem }: FormSubMenuProps) => {
                 />
               )}
             />
-            {errorsAdd.menuId && (
-              <div className=' mt-2  text-danger-500 block text-sm'>{errorsAdd.menuId?.message || ' '}</div>
+            {errorsAdd.menu_footerId && (
+              <div className=' mt-2  text-danger-500 block text-sm'>{errorsAdd.menu_footerId?.message || ' '}</div>
             )}
           </div>
           <Textinput
@@ -169,12 +169,12 @@ const FormSubMenu = ({ handleOnSubmit, currentMenuItem }: FormSubMenuProps) => {
       )}
       {currentMenuItem && (
         <form onSubmit={handleEditSubmit(onEditSubmit)} className='space-y-4 '>
-          <div className={errorsEdit.menuId ? 'has-error' : ''}>
+          <div className={errorsEdit.menu_footerId ? 'has-error' : ''}>
             <label className='form-label' htmlFor='menuId_s'>
               Menu Parent
             </label>
             <Controller
-              name='menuId'
+              name='menu_footerId'
               control={controlEdit}
               render={({ field: { value, onBlur, onChange, ref } }) => (
                 <Select
@@ -194,8 +194,8 @@ const FormSubMenu = ({ handleOnSubmit, currentMenuItem }: FormSubMenuProps) => {
                 />
               )}
             />
-            {errorsEdit.menuId && (
-              <div className=' mt-2  text-danger-500 block text-sm'>{errorsEdit.menuId?.message || ' '}</div>
+            {errorsEdit.menu_footerId && (
+              <div className=' mt-2  text-danger-500 block text-sm'>{errorsEdit.menu_footerId?.message || ' '}</div>
             )}
           </div>
           <Textinput
@@ -278,4 +278,4 @@ const menuOptions = [
   },
 ];
 
-export default FormSubMenu;
+export default FormFooterSubMenu;

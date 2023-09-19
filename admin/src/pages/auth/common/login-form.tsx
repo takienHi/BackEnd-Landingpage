@@ -1,59 +1,53 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Textinput from 'src/components/ui/Textinput';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import Checkbox from 'src/components/ui/Checkbox';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { v4 as uuidv4 } from 'uuid';
+import { LoginSchema, loginSchema } from 'src/schema/AuthSchema';
+import AuthApi from 'src/apis/auth.api';
+import { setProfileToLS } from 'src/utils/auth';
+import paths from 'src/constant/paths';
+import { AppContext } from 'src/contexts/app.context';
+import Toastify from 'src/components/ui/Toastify';
 
-const users = [
-  {
-    id: uuidv4(),
-    name: 'dashcode',
-    email: 'dashcode@gmail.com',
-    password: 'dashcode',
-  },
-];
+type FormData = LoginSchema;
 
-const schema = yup
-  .object({
-    email: yup.string().email('Invalid email').required('Email is Required'),
-    password: yup.string().required('Password is Required'),
-  })
-  .required();
 const LoginForm = () => {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
+
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm({
-    resolver: yupResolver(schema),
+  } = useForm<FormData>({
+    resolver: yupResolver<FormData>(loginSchema),
     //
-    mode: 'all',
+    mode: 'onSubmit',
   });
   const navigate = useNavigate();
-  const onSubmit = (data: any) => {
-    const user = users.find((user: any) => user.email === data.email && user.password === data.password);
-    if (user) {
-      //   dispatch(handleLogin(true));
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1500);
-    } else {
-      toast.error('Invalid credentials', {
-        position: 'top-right',
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
+
+  const onSubmit = async (data: any) => {
+    await AuthApi.login(data)
+      .then((res) => {
+        console.log(res);
+
+        if (res) {
+          setIsAuthenticated(true);
+          setProfile(res);
+          setProfileToLS(res);
+          Toastify.toastSuccess('Login Successfully');
+
+          navigate('../' + paths.dashboard.link, { replace: true });
+        } else {
+          Toastify.toastError('Your email or password is incorrect');
+        }
+        return res;
+      })
+      .catch((e: Error) => {
+        console.log(e);
       });
-    }
   };
 
   const [checked, setChecked] = useState(false);
@@ -79,7 +73,7 @@ const LoginForm = () => {
       <div className='flex justify-between'>
         <Checkbox value={checked} onChange={() => setChecked(!checked)} label='Keep me signed in' />
         <Link to='/forgot-password' className='text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium'>
-          Forgot Password?{' '}
+          Forgot Password?
         </Link>
       </div>
 

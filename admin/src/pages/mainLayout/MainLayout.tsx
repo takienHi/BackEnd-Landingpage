@@ -1,16 +1,19 @@
 import { useState, useMemo, useEffect } from 'react';
-import SubMenuApi from 'src/apis/sub_menu.api';
-import Modal from 'src/components/ui/Modal';
-import { SubMenuType, SubMenuWithParentType } from 'src/types/SubMenuType';
-import TableAction from 'src/components/partials/Table/TableAction';
-import svgRabit from 'src/assets/images/svg/rabit.svg';
-import FormSubMenu from './FormSubMenu';
-import Toastify from 'src/components/ui/Toastify';
-import { SubMenuSchema } from 'src/schema/SubMenuSchema';
+import MainLayoutSectionComponentsApi from 'src/apis/layout_section_components.api';
 import Table, { SelectColumnFilter } from 'src/components/partials/Table/Table';
-const SubMenuManager = () => {
-  const [subMenu, setSubMenu] = useState<SubMenuWithParentType[]>([]);
+import TableAction from 'src/components/partials/Table/TableAction';
+import Modal from 'src/components/ui/Modal';
+import { LayoutSectionComponentExpandType } from 'src/types/LayoutSectionComponentType';
+import { SubMenuType, SubMenuWithParentType } from 'src/types/SubMenuType';
+import svgRabit from 'src/assets/images/svg/rabit.svg';
+import Toastify from 'src/components/ui/Toastify';
+import { SectionComponentType } from 'src/types/SectionComponentType';
+import SectionComponentsApi from 'src/apis/section_components.api';
+import OptionsSelect from 'src/components/ui/Options';
 
+const MainLayout = () => {
+  const [layoutSectionComponent, setLayoutSectionComponent] = useState<LayoutSectionComponentExpandType[]>([]);
+  const [sectionComponents, setSectionComponents] = useState<SectionComponentType[]>([]);
   const [currentSubMenuItem, setCurrentSubMenuItem] = useState<SubMenuWithParentType | null>(null);
   const [addModal, setAddModal] = useState(false);
   const [viewModal, setViewModal] = useState(false);
@@ -20,58 +23,17 @@ const SubMenuManager = () => {
   const columns: any[] = useMemo(
     () => [
       {
-        Header: '#',
-        accessor: 'row',
-        filterable: false,
-        Cell: (row: any) => {
-          return <span>{row.row.index + 1}</span>;
-        },
-        disableGlobalFilter: true,
-      },
-      {
-        Header: 'Name',
-        accessor: 'name',
+        Header: 'Ordinal Number',
+        accessor: 'ordinal_number',
         Cell: (row: any) => {
           return <span>{row?.cell?.value}</span>;
         },
       },
       {
-        Header: 'Path',
-        accessor: 'path',
+        Header: 'component',
+        accessor: 'section_component.name',
         Cell: (row: any) => {
           return <span>{row?.cell?.value}</span>;
-        },
-      },
-      {
-        Header: 'menu parent',
-        accessor: 'menu.name',
-        Cell: (row: any) => {
-          return <span>{row?.cell?.value}</span>;
-        },
-        className: 'right',
-        Filter: SelectColumnFilter, // new
-        filter: 'includes',
-        disableGlobalFilter: true,
-      },
-      {
-        Header: 'status',
-        accessor: 'status',
-        disableGlobalFilter: true,
-
-        Cell: (row: any) => {
-          return (
-            <span className='block w-full'>
-              <span
-                className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                  row?.cell?.value === 'active' ? 'text-success-500 bg-success-500' : ''
-                } 
-              ${row?.cell?.value === 'disabled' ? 'text-danger-500 bg-danger-500' : ''}
-              `}
-              >
-                {row?.cell?.value}
-              </span>
-            </span>
-          );
         },
       },
       {
@@ -84,8 +46,8 @@ const SubMenuManager = () => {
           return (
             <TableAction
               handleMenuViewOpen={() => handleSubMenuViewOpen(row.row?.original)}
-              handleMenuEditOpen={() => handleSubMenuEditOpen(row.row?.original)}
-              handleMenuDeleteOpen={() => handleSubMenuDeleteOpen(row.row?.original)}
+              // handleMenuEditOpen={() => handleSubMenuEditOpen(row.row?.original)}
+              // handleMenuDeleteOpen={() => handleSubMenuDeleteOpen(row.row?.original)}
             />
           );
         },
@@ -94,10 +56,29 @@ const SubMenuManager = () => {
     []
   );
 
+  // let sectionComponentOptions = layoutSectionComponent.filter(
+  //   (item: LayoutSectionComponentExpandType) => item.section_componentId
+  // );
+
+  const sectionComponentOptions = [
+    ...sectionComponents
+      .filter(({ id: id1 }) => !layoutSectionComponent.some(({ section_componentId: id2 }) => id2 === id1))
+      .map(({ id, name }) => {
+        return { value: id, label: name };
+      }),
+  ];
+
   const getSubMenuWithMenu = () => {
-    SubMenuApi.getAllWithParent()
+    MainLayoutSectionComponentsApi.getMainLayoutSectionComponents()
       .then((response: any) => {
-        setSubMenu([...response.data]);
+        setLayoutSectionComponent([...response.data]);
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+    SectionComponentsApi.getAllSectionComponents()
+      .then((response2: any) => {
+        setSectionComponents([...response2.data]);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -108,61 +89,19 @@ const SubMenuManager = () => {
     getSubMenuWithMenu();
   }, []);
 
-  const handleAddSubmit = (formValues: any) => {
-    const data: Omit<SubMenuSchema, 'id'> = {
-      name: formValues.name,
-      path: formValues.path,
-      status: formValues.status,
-      menuId: formValues.menuId,
-    };
-    SubMenuApi.create(data)
-      .then((_response: any) => {
-        closeAddModal();
-        Toastify.toastSuccess('The new menu item has been add');
+  useEffect(() => {
+    console.log(sectionComponentOptions);
+  }, [sectionComponents]);
 
-        getSubMenuWithMenu();
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
+  const handleAddSubmit = (formValues: any) => {
     return false;
   };
 
   const handleEditSubmit = (formValues: any) => {
-    const id = currentSubMenuItem ? currentSubMenuItem.id : null;
-    const data: Omit<SubMenuSchema, 'id'> = {
-      name: formValues.name,
-      path: formValues.path,
-      status: formValues.status,
-      menuId: formValues.menuId,
-    };
-    SubMenuApi.update(id, data)
-      .then((_response: any) => {
-        console.log(_response);
-        closeEditModal();
-        Toastify.toastSuccess('Edit submenu item successfully');
-        setCurrentSubMenuItem(null);
-        getSubMenuWithMenu();
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
     return false;
   };
 
   const handleDeleteSubmit = () => {
-    const id = currentSubMenuItem ? currentSubMenuItem.id : null;
-    SubMenuApi.remove(id)
-      .then((_response: any) => {
-        console.log(_response);
-        closeDeleteModal();
-        Toastify.toastWarning('Warning menu item successfully');
-        setCurrentSubMenuItem(null);
-        getSubMenuWithMenu();
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
     return false;
   };
 
@@ -177,7 +116,14 @@ const SubMenuManager = () => {
           closeModal={closeAddModal}
           openModal={openAddModal}
         >
-          <FormSubMenu handleOnSubmit={(formValues) => handleAddSubmit(formValues)} />
+          <form className='space-y-4 min-h-[200px]'>
+            <OptionsSelect options={sectionComponentOptions} name='section_componentId' />
+            <div className='ltr:text-right rtl:text-left mt-5'>
+              <button className='btn btn-dark  text-center' type='submit' value='Submit'>
+                Add
+              </button>
+            </div>
+          </form>
         </Modal>
         <Modal
           title='View sub menu item'
@@ -242,10 +188,10 @@ const SubMenuManager = () => {
           closeModal={closeEditModal}
           openModal={openEditModal}
         >
-          <FormSubMenu
+          {/* <FormSubMenu
             handleOnSubmit={(formValues) => handleEditSubmit(formValues)}
             currentMenuItem={currentSubMenuItem}
-          />
+          /> */}
         </Modal>
         <Modal
           title={`Delete `}
@@ -329,11 +275,16 @@ const SubMenuManager = () => {
   return (
     <>
       <div className='lg:col-span-12 col-span-12'>
-        <Table title='Sub Menu' dataTable={subMenu} columnsTable={columns} handleTableButton={openAddModal} />
+        <Table
+          title='Main layout component'
+          dataTable={layoutSectionComponent}
+          columnsTable={columns}
+          handleTableButton={openAddModal}
+        />
       </div>
       <ModalCrud />
     </>
   );
 };
 
-export default SubMenuManager;
+export default MainLayout;

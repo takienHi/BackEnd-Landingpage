@@ -1,17 +1,17 @@
 import { useState, useMemo, useEffect } from 'react';
-import SubMenuApi from 'src/apis/sub_menu.api';
+import MenuApi from 'src/apis/menu.api';
 import Modal from 'src/components/ui/Modal';
-import { SubMenuType, SubMenuWithParentType } from 'src/types/SubMenuType';
+import { MenuType } from 'src/types/MenuType';
 import TableAction from 'src/components/partials/Table/TableAction';
 import svgRabit from 'src/assets/images/svg/rabit.svg';
-import FormSubMenu from './FormSubMenu';
+import FormAddMenu from './FormAddMenu';
 import Toastify from 'src/components/ui/Toastify';
-import { SubMenuSchema } from 'src/schema/SubMenuSchema';
+import { MenuSchema } from 'src/schema/MenuSchema';
 import Table, { SelectColumnFilter } from 'src/components/partials/Table/Table';
-const SubMenuManager = () => {
-  const [subMenu, setSubMenu] = useState<SubMenuWithParentType[]>([]);
+const MenuManager = () => {
+  const [subMenu, setMenu] = useState<MenuType[]>([]);
 
-  const [currentSubMenuItem, setCurrentSubMenuItem] = useState<SubMenuWithParentType | null>(null);
+  const [currentMenuItem, setCurrentMenuItem] = useState<MenuType | null>(null);
   const [addModal, setAddModal] = useState(false);
   const [viewModal, setViewModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -42,17 +42,7 @@ const SubMenuManager = () => {
           return <span>{row?.cell?.value}</span>;
         },
       },
-      {
-        Header: 'menu parent',
-        accessor: 'menu.name',
-        Cell: (row: any) => {
-          return <span>{row?.cell?.value}</span>;
-        },
-        className: 'right',
-        Filter: SelectColumnFilter, // new
-        filter: 'includes',
-        disableGlobalFilter: true,
-      },
+
       {
         Header: 'status',
         accessor: 'status',
@@ -83,9 +73,9 @@ const SubMenuManager = () => {
         Cell: (row: any) => {
           return (
             <TableAction
-              handleMenuViewOpen={() => handleSubMenuViewOpen(row.row?.original)}
-              handleMenuEditOpen={() => handleSubMenuEditOpen(row.row?.original)}
-              handleMenuDeleteOpen={() => handleSubMenuDeleteOpen(row.row?.original)}
+              handleMenuViewOpen={() => handleMenuViewOpen(row.row?.original)}
+              handleMenuEditOpen={() => handleMenuEditOpen(row.row?.original)}
+              handleMenuDeleteOpen={() => handleMenuDeleteOpen(row.row?.original)}
             />
           );
         },
@@ -94,10 +84,10 @@ const SubMenuManager = () => {
     []
   );
 
-  const getSubMenuWithMenu = () => {
-    SubMenuApi.getAllWithParent()
+  const getMenuWithMenu = () => {
+    MenuApi.getAll()
       .then((response: any) => {
-        setSubMenu([...response.data]);
+        setMenu([...response.data]);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -105,22 +95,22 @@ const SubMenuManager = () => {
   };
 
   useEffect(() => {
-    getSubMenuWithMenu();
+    getMenuWithMenu();
   }, []);
 
   const handleAddSubmit = (formValues: any) => {
-    const data: Omit<SubMenuSchema, 'id'> = {
+    const data: Omit<MenuSchema, 'id'> = {
       name: formValues.name,
       path: formValues.path,
       status: formValues.status,
-      menuId: formValues.menuId,
+      hasChildren: formValues.hasChildren,
     };
-    SubMenuApi.create(data)
+    MenuApi.create(data)
       .then((_response: any) => {
         closeAddModal();
         Toastify.toastSuccess('The new menu item has been add');
 
-        getSubMenuWithMenu();
+        getMenuWithMenu();
       })
       .catch((e: Error) => {
         console.log(e);
@@ -129,20 +119,20 @@ const SubMenuManager = () => {
   };
 
   const handleEditSubmit = (formValues: any) => {
-    const id = currentSubMenuItem ? currentSubMenuItem.id : null;
-    const data: Omit<SubMenuSchema, 'id'> = {
+    const id = currentMenuItem ? currentMenuItem.id : null;
+    const data: Omit<MenuSchema, 'id'> = {
       name: formValues.name,
       path: formValues.path,
       status: formValues.status,
-      menuId: formValues.menuId,
+      hasChildren: formValues.hasChildren,
     };
-    SubMenuApi.update(id, data)
+    MenuApi.update(id, data)
       .then((_response: any) => {
         console.log(_response);
         closeEditModal();
         Toastify.toastSuccess('Edit submenu item successfully');
-        setCurrentSubMenuItem(null);
-        getSubMenuWithMenu();
+        setCurrentMenuItem(null);
+        getMenuWithMenu();
       })
       .catch((e: Error) => {
         console.log(e);
@@ -151,14 +141,14 @@ const SubMenuManager = () => {
   };
 
   const handleDeleteSubmit = () => {
-    const id = currentSubMenuItem ? currentSubMenuItem.id : null;
-    SubMenuApi.remove(id)
+    const id = currentMenuItem ? currentMenuItem.id : null;
+    MenuApi.remove(id)
       .then((_response: any) => {
         console.log(_response);
         closeDeleteModal();
         Toastify.toastWarning('Warning menu item successfully');
-        setCurrentSubMenuItem(null);
-        getSubMenuWithMenu();
+        setCurrentMenuItem(null);
+        getMenuWithMenu();
       })
       .catch((e: Error) => {
         console.log(e);
@@ -177,7 +167,7 @@ const SubMenuManager = () => {
           closeModal={closeAddModal}
           openModal={openAddModal}
         >
-          <FormSubMenu handleOnSubmit={(formValues) => handleAddSubmit(formValues)} />
+          <FormAddMenu handleOnSubmit={(formValues) => handleAddSubmit(formValues)} />
         </Modal>
         <Modal
           title='View sub menu item'
@@ -186,7 +176,7 @@ const SubMenuManager = () => {
           openModal={openViewModal}
           closeModal={closeViewModal}
         >
-          {currentSubMenuItem && (
+          {currentMenuItem && (
             <>
               <main className={'card-body mt-5'}>
                 <div className='text-sm'>
@@ -196,7 +186,7 @@ const SubMenuManager = () => {
                         <div className='uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]'>
                           Display Name
                         </div>
-                        <div className='text-base text-slate-600 dark:text-slate-50'>{currentSubMenuItem.name}</div>
+                        <div className='text-base text-slate-600 dark:text-slate-50'>{currentMenuItem.name}</div>
                       </div>
                     </li>
 
@@ -205,7 +195,7 @@ const SubMenuManager = () => {
                         <div className='uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]'>
                           PATH
                         </div>
-                        <div className='text-base text-slate-600 dark:text-slate-50'>{currentSubMenuItem.path}</div>
+                        <div className='text-base text-slate-600 dark:text-slate-50'>{currentMenuItem.path}</div>
                       </div>
                     </li>
 
@@ -214,17 +204,7 @@ const SubMenuManager = () => {
                         <div className='uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]'>
                           Status
                         </div>
-                        <div className='text-base text-slate-600 dark:text-slate-50'>{currentSubMenuItem.status}</div>
-                      </div>
-                    </li>
-                    <li className='flex space-x-3 rtl:space-x-reverse'>
-                      <div className='flex-1'>
-                        <div className='uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]'>
-                          Menu Parent
-                        </div>
-                        <div className='text-base text-slate-600 dark:text-slate-50'>
-                          {currentSubMenuItem.menu?.name}
-                        </div>
+                        <div className='text-base text-slate-600 dark:text-slate-50'>{currentMenuItem.status}</div>
                       </div>
                     </li>
                   </ul>
@@ -242,9 +222,9 @@ const SubMenuManager = () => {
           closeModal={closeEditModal}
           openModal={openEditModal}
         >
-          <FormSubMenu
+          <FormAddMenu
             handleOnSubmit={(formValues) => handleEditSubmit(formValues)}
-            currentMenuItem={currentSubMenuItem}
+            currentMenuItem={currentMenuItem}
           />
         </Modal>
         <Modal
@@ -278,18 +258,18 @@ const SubMenuManager = () => {
   };
 
   /* #region Modal Function */
-  const handleSubMenuViewOpen = (item: SubMenuType) => {
-    setCurrentSubMenuItem(item);
+  const handleMenuViewOpen = (item: MenuType) => {
+    setCurrentMenuItem(item);
     openViewModal();
   };
 
-  const handleSubMenuEditOpen = (item: SubMenuType) => {
-    setCurrentSubMenuItem(item);
+  const handleMenuEditOpen = (item: MenuType) => {
+    setCurrentMenuItem(item);
     openEditModal();
   };
 
-  const handleSubMenuDeleteOpen = (item: SubMenuType) => {
-    setCurrentSubMenuItem(item);
+  const handleMenuDeleteOpen = (item: MenuType) => {
+    setCurrentMenuItem(item);
     openDeleteModal();
   };
 
@@ -329,11 +309,11 @@ const SubMenuManager = () => {
   return (
     <>
       <div className='lg:col-span-12 col-span-12'>
-        <Table title='Sub Menu' dataTable={subMenu} columnsTable={columns} handleTableButton={openAddModal} />
+        <Table title='Menu' dataTable={subMenu} columnsTable={columns} handleTableButton={openAddModal} />
       </div>
       <ModalCrud />
     </>
   );
 };
 
-export default SubMenuManager;
+export default MenuManager;

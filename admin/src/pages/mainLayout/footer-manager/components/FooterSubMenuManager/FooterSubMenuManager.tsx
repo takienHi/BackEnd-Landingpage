@@ -1,17 +1,17 @@
 import { useState, useMemo, useEffect } from 'react';
-import SubMenuApi from 'src/apis/sub_menu.api';
 import Modal from 'src/components/ui/Modal';
-import { SubMenuType, SubMenuWithParentType } from 'src/types/SubMenuType';
+import { FooterSubMenuType, FooterSubMenuWithParentType } from 'src/types/FooterSubMenuType';
 import TableAction from 'src/components/partials/Table/TableAction';
 import svgRabit from 'src/assets/images/svg/rabit.svg';
-import FormSubMenu from './FormSubMenu';
 import Toastify from 'src/components/ui/Toastify';
-import { SubMenuSchema } from 'src/schema/SubMenuSchema';
 import Table, { SelectColumnFilter } from 'src/components/partials/Table/Table';
-const SubMenuManager = () => {
-  const [subMenu, setSubMenu] = useState<SubMenuWithParentType[]>([]);
+import SubMenuFooterApi from 'src/apis/sub_menu_footer.api';
+import { SubMenuFooterSchema } from 'src/schema/FooterSubMenuSchema';
+import FormFooterSubMenu from './FormFooterSubMenu';
+const FooterSubMenuManager = () => {
+  const [subMenu, setSubMenu] = useState<FooterSubMenuWithParentType[]>([]);
 
-  const [currentSubMenuItem, setCurrentSubMenuItem] = useState<SubMenuWithParentType | null>(null);
+  const [currentSubMenuItem, setCurrentSubMenuItem] = useState<FooterSubMenuWithParentType | null>(null);
   const [addModal, setAddModal] = useState(false);
   const [viewModal, setViewModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -44,7 +44,7 @@ const SubMenuManager = () => {
       },
       {
         Header: 'menu parent',
-        accessor: 'menu.name',
+        accessor: 'menu_footer.name',
         Cell: (row: any) => {
           return <span>{row?.cell?.value}</span>;
         },
@@ -95,7 +95,7 @@ const SubMenuManager = () => {
   );
 
   const getSubMenuWithMenu = () => {
-    SubMenuApi.getAllWithParent()
+    SubMenuFooterApi.getAllWithParent()
       .then((response: any) => {
         setSubMenu([...response.data]);
       })
@@ -108,14 +108,18 @@ const SubMenuManager = () => {
     getSubMenuWithMenu();
   }, []);
 
+  useEffect(() => {
+    console.log('footer subMenu: ', subMenu);
+  }, [subMenu]);
+
   const handleAddSubmit = (formValues: any) => {
-    const data: Omit<SubMenuSchema, 'id'> = {
+    const data: Omit<SubMenuFooterSchema, 'id'> = {
       name: formValues.name,
       path: formValues.path,
       status: formValues.status,
-      menuId: formValues.menuId,
+      menu_footerId: formValues.menu_footerId,
     };
-    SubMenuApi.create(data)
+    SubMenuFooterApi.create(data)
       .then((_response: any) => {
         closeAddModal();
         Toastify.toastSuccess('The new menu item has been add');
@@ -130,13 +134,13 @@ const SubMenuManager = () => {
 
   const handleEditSubmit = (formValues: any) => {
     const id = currentSubMenuItem ? currentSubMenuItem.id : null;
-    const data: Omit<SubMenuSchema, 'id'> = {
+    const data: Omit<SubMenuFooterSchema, 'id'> = {
       name: formValues.name,
       path: formValues.path,
       status: formValues.status,
-      menuId: formValues.menuId,
+      menu_footerId: formValues.menu_footerId,
     };
-    SubMenuApi.update(id, data)
+    SubMenuFooterApi.update(id, data)
       .then((_response: any) => {
         console.log(_response);
         closeEditModal();
@@ -152,7 +156,7 @@ const SubMenuManager = () => {
 
   const handleDeleteSubmit = () => {
     const id = currentSubMenuItem ? currentSubMenuItem.id : null;
-    SubMenuApi.remove(id)
+    SubMenuFooterApi.remove(id)
       .then((_response: any) => {
         console.log(_response);
         closeDeleteModal();
@@ -177,7 +181,7 @@ const SubMenuManager = () => {
           closeModal={closeAddModal}
           openModal={openAddModal}
         >
-          <FormSubMenu handleOnSubmit={(formValues) => handleAddSubmit(formValues)} />
+          <FormFooterSubMenu handleOnSubmit={(formValues) => handleAddSubmit(formValues)} />
         </Modal>
         <Modal
           title='View sub menu item'
@@ -223,7 +227,7 @@ const SubMenuManager = () => {
                           Menu Parent
                         </div>
                         <div className='text-base text-slate-600 dark:text-slate-50'>
-                          {currentSubMenuItem.menu?.name}
+                          {currentSubMenuItem.menu_footer?.name}
                         </div>
                       </div>
                     </li>
@@ -242,7 +246,7 @@ const SubMenuManager = () => {
           closeModal={closeEditModal}
           openModal={openEditModal}
         >
-          <FormSubMenu
+          <FormFooterSubMenu
             handleOnSubmit={(formValues) => handleEditSubmit(formValues)}
             currentMenuItem={currentSubMenuItem}
           />
@@ -278,17 +282,17 @@ const SubMenuManager = () => {
   };
 
   /* #region Modal Function */
-  const handleSubMenuViewOpen = (item: SubMenuType) => {
+  const handleSubMenuViewOpen = (item: FooterSubMenuType) => {
     setCurrentSubMenuItem(item);
     openViewModal();
   };
 
-  const handleSubMenuEditOpen = (item: SubMenuType) => {
+  const handleSubMenuEditOpen = (item: FooterSubMenuType) => {
     setCurrentSubMenuItem(item);
     openEditModal();
   };
 
-  const handleSubMenuDeleteOpen = (item: SubMenuType) => {
+  const handleSubMenuDeleteOpen = (item: FooterSubMenuType) => {
     setCurrentSubMenuItem(item);
     openDeleteModal();
   };
@@ -336,4 +340,4 @@ const SubMenuManager = () => {
   );
 };
 
-export default SubMenuManager;
+export default FooterSubMenuManager;

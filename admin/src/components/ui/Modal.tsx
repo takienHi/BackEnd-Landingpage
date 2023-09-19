@@ -28,7 +28,7 @@ type ModalType = {
 const Modal = ({
   noFade,
   disableBackdrop,
-  className = 'max-w-xl',
+  className,
   children,
   footerContent,
   centered,
@@ -87,7 +87,7 @@ const Modal = ({
                     leaveTo={noFade ? '' : 'opacity-0 scale-95'}
                   >
                     <Dialog.Panel
-                      className={`${className} w-full transform overflow-hidden rounded-md bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-alll `}
+                      className={`${className} max-w-xl w-full transform rounded-md bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-all `}
                     >
                       <div
                         className={` ${themeClass} relative overflow-hidden py-4 px-5 text-white flex justify-between `}
@@ -117,7 +117,7 @@ const Modal = ({
         </>
       ) : (
         <Transition appear show={isOpen} as={Fragment}>
-          <Dialog as='div' className='relative z-[99999]' onClose={closeModal}>
+          <Dialog as='div' className='fixed inset-0 z-[99999]' onClose={closeModal}>
             <Transition.Child
               as={Fragment}
               enter={noFade ? '' : 'duration-300 ease-out'}
@@ -130,7 +130,7 @@ const Modal = ({
               {!disableBackdrop && <div className='fixed inset-0 bg-slate-900/50 backdrop-filter backdrop-blur-sm' />}
             </Transition.Child>
 
-            <div className='fixed inset-0 overflow-y-auto'>
+            <div className='fixed inset-0 z-30 w-screen overflow-y-auto"'>
               <div
                 className={`flex min-h-full justify-center text-center p-6 ${
                   centered ? 'items-center' : 'items-start '
@@ -146,8 +146,8 @@ const Modal = ({
                   leaveTo={noFade ? '' : 'opacity-0 scale-95'}
                 >
                   <Dialog.Panel
-                    className={`w-full transform overflow-hidden rounded-md
-                 bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-alll ${className}`}
+                    className={`w-full transform rounded-md
+                 bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-all max-w-xl ${className}`}
                   >
                     <div
                       className={`relative overflow-hidden py-4 px-5 text-white flex justify-between  ${themeClass}`}

@@ -12,7 +12,7 @@ const getAll = async (filterString: string) => {
 
 const getAllWithParent = async (filterString?: string) => {
   if (filterString) {
-    return await http.get<Array<IData>>(_path + '?' + filterString + '_sort=id&_order=asc');
+    return await http.get<Array<IDataWithParent>>(_path + '?' + filterString + '_sort=id&_order=asc');
   }
   return await http.get<Array<IDataWithParent>>(_path + '?_expand=menu&_sort=id&_order=asc');
 };

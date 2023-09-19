@@ -35,6 +35,10 @@ const paths = {
     title: 'Logo Website',
     link: 'logo-website',
   },
+  main_layout: {
+    title: 'Main Layout',
+    link: 'main-layout',
+  },
 } as const;
 
 export default paths;

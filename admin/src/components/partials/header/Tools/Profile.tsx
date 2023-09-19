@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Dropdown from 'src/components/ui/Dropdown';
 import Icon from 'src/components/ui/Icon';
 import { Menu, Transition } from '@headlessui/react';
@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import UserAvatar from 'src/assets/images/all-img/user.png';
+import { AppContext } from 'src/contexts/app.context';
+import { clearLS } from 'src/utils/auth';
 
 const profileLabel = () => {
   return (
@@ -26,69 +28,82 @@ const profileLabel = () => {
 };
 
 const Profile = () => {
+  const { setIsAuthenticated, profile, setProfile } = useContext(AppContext);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const ProfileMenu = [
-    {
-      label: 'Profile',
-      icon: 'heroicons-outline:user',
+  // const ProfileMenu = [
+  //   {
+  //     label: 'Profile',
+  //     icon: 'heroicons-outline:user',
 
-      action: () => {
-        console.log('profile');
-      },
-    },
-    {
-      label: 'Chat',
-      icon: 'heroicons-outline:chat',
-      action: () => {
-        console.log('chat');
-      },
-    },
-    {
-      label: 'Email',
-      icon: 'heroicons-outline:mail',
-      action: () => {
-        console.log('email');
-      },
-    },
-    {
-      label: 'Todo',
-      icon: 'heroicons-outline:clipboard-check',
-      action: () => {
-        console.log('todo');
-      },
-    },
-    {
-      label: 'Settings',
-      icon: 'heroicons-outline:cog',
-      action: () => {
-        console.log('settings');
-      },
-    },
-    {
-      label: 'Price',
-      icon: 'heroicons-outline:credit-card',
-      action: () => {
-        console.log('price');
-      },
-    },
-    {
-      label: 'Faq',
-      icon: 'heroicons-outline:information-circle',
-      action: () => {
-        console.log('faq');
-      },
-    },
+  //     action: () => {
+  //       console.log('profile');
+  //     },
+  //   },
+  //   {
+  //     label: 'Chat',
+  //     icon: 'heroicons-outline:chat',
+  //     action: () => {
+  //       console.log('chat');
+  //     },
+  //   },
+  //   {
+  //     label: 'Email',
+  //     icon: 'heroicons-outline:mail',
+  //     action: () => {
+  //       console.log('email');
+  //     },
+  //   },
+  //   {
+  //     label: 'Todo',
+  //     icon: 'heroicons-outline:clipboard-check',
+  //     action: () => {
+  //       console.log('todo');
+  //     },
+  //   },
+  //   {
+  //     label: 'Settings',
+  //     icon: 'heroicons-outline:cog',
+  //     action: () => {
+  //       console.log('settings');
+  //     },
+  //   },
+  //   {
+  //     label: 'Price',
+  //     icon: 'heroicons-outline:credit-card',
+  //     action: () => {
+  //       console.log('price');
+  //     },
+  //   },
+  //   {
+  //     label: 'Faq',
+  //     icon: 'heroicons-outline:information-circle',
+  //     action: () => {
+  //       console.log('faq');
+  //     },
+  //   },
+  //   {
+  //     label: 'Logout',
+  //     icon: 'heroicons-outline:login',
+  //     action: () => {
+  //       console.log('logout');
+  //     },
+  //   },
+  // ];
+
+  const ProfileMenu = [
     {
       label: 'Logout',
       icon: 'heroicons-outline:login',
       action: () => {
-        console.log('logout');
+        setIsAuthenticated(false);
+        setProfile(null);
+        clearLS();
       },
     },
   ];
-
   return (
     <Dropdown label={profileLabel()} classMenuItems='w-[180px] top-[58px]'>
       {ProfileMenu.map((item: any, index) => (

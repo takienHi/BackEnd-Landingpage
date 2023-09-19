@@ -15,19 +15,19 @@ export const menuItems: menuItemsType = [
     title: 'Layouts',
   },
   {
-    title: 'Main layout',
+    title: paths.main_layout.title,
     icon: 'streamline:interface-layout-2-column-header-layout-layouts-masthead-sidebar',
-    isHide: true,
-    child: [
-      {
-        childtitle: paths.header.title,
-        childlink: paths.header.link,
-      },
-      {
-        childtitle: paths.footer.title,
-        childlink: paths.footer.link,
-      },
-    ],
+    link: paths.main_layout.link,
+  },
+  {
+    title: paths.header.title,
+    icon: 'mdi:page-layout-header',
+    link: paths.header.link,
+  },
+  {
+    title: paths.footer.title,
+    icon: 'mdi:page-layout-footer',
+    link: paths.footer.link,
   },
   {
     title: paths.logo_website.title,

@@ -1,22 +1,10 @@
-import { forwardRef, useRef, useEffect, useMemo, memo } from 'react';
-import Card from 'src/components/ui/Card';
-import Icon from 'src/components/ui/Icon';
-import {
-  useTable,
-  useRowSelect,
-  useSortBy,
-  useGlobalFilter,
-  usePagination,
-  TableInstance,
-  UsePaginationInstanceProps,
-  UseSortByInstanceProps,
-  UsePaginationState,
-  useFilters,
-} from 'react-table';
-import GlobalFilter from './GlobalFilter';
-// import Select from 'src/components/ui/Select';
-import Select from 'react-select';
+import { useMemo } from 'react';
 import Button from 'src/components/ui/Button';
+import Card from 'src/components/ui/Card';
+import { useTable, useRowSelect, useSortBy, useGlobalFilter, usePagination, useFilters } from 'react-table';
+import Icon from 'src/components/ui/Icon';
+import GlobalFilter from './GlobalFilter';
+import Select from 'react-select';
 
 type TableType = {
   title?: string;
@@ -39,13 +27,13 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
 
   const selectOptions = [
     { value: '', label: 'All' },
-    ...options.map((option: any, i: any) => {
+    ...options.map((option: any) => {
       return { value: option, label: option };
     }),
   ];
   // Render a multi-select box
 
-  const onChange = (opt: any, ctx: any) => {
+  const onChange = (opt: any) => {
     setFilter(opt.value || '');
   };
   return (
@@ -67,44 +55,20 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
   );
 }
 
-const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton }: TableType) => {
-  const columns: any = useMemo(() => columnsTable, []);
-  // const data = useMemo(() => dataTable, []);
-  // const columns: any = columnsTable;
+const Table = ({ title, dataTable, columnsTable, handleTableButton }: TableType) => {
+  const columns = columnsTable;
   const data = dataTable;
 
   const tableInstance = useTable(
     {
-      columns,
-      data,
+      columns: columns,
+      data: data,
     },
-
     useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination,
     useRowSelect
-
-    // (hooks: any) => {
-    //   if (isSelection) {
-    //     hooks.visibleColumns.push((columns: any) => [
-    //       {
-    //         id: 'selection',
-    //         Header: ({ getToggleAllRowsSelectedProps }: any) => (
-    //           <div>
-    //             <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-    //           </div>
-    //         ),
-    //         Cell: ({ row }: any) => (
-    //           <div>
-    //             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-    //           </div>
-    //         ),
-    //       },
-    //       ...columns,
-    //     ]);
-    //   }
-    // }
   );
 
   const {
@@ -128,23 +92,13 @@ const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton 
 
   const { globalFilter, pageIndex, pageSize } = state;
 
-  // useEffect(() => {
-  //   console.log('re-render');
-  //   console.log('menu:', columnsTable);
-  // }, [columnsTable]);
-
-  // useEffect(() => {
-  //   console.log('re-render');
-  //   console.log('dataTable:', dataTable);
-  // }, [dataTable]);
-
   return (
     <>
       <Card noborder>
         <div className='md:flex pb-6 items-center'>
           <h6 className='flex-1 md:mb-0 mb-3'>{title}</h6>
           <div className='md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse'>
-            {/* {headerGroups.map((headerGroup: any) =>
+            {headerGroups.map((headerGroup: any) =>
               headerGroup.headers.map((column: any) =>
                 column.Filter ? (
                   <div className='mt-2 sm:mt-0' key={column.id}>
@@ -152,18 +106,18 @@ const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton 
                   </div>
                 ) : null
               )
-            )} */}
-            <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+            )}
+            <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
 
-            <Button
-              icon='heroicons-outline:plus-sm'
-              text='Add Record'
-              className=' btn-dark font-normal btn-sm '
-              iconClass='text-lg'
-              onClick={() => {
-                handleTableButton ? handleTableButton() : null;
-              }}
-            />
+            {handleTableButton && (
+              <Button
+                icon='heroicons-outline:plus-sm'
+                text='Add Record'
+                className=' btn-dark font-normal btn-sm '
+                iconClass='text-lg'
+                onClick={handleTableButton}
+              />
+            )}
           </div>
         </div>
         <div className='overflow-x-auto -mx-6'>
@@ -173,7 +127,7 @@ const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton 
                 className='min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700'
                 {...getTableProps}
               >
-                <thead className=' border-t border-slate-100 dark:border-slate-800'>
+                <thead className='bg-slate-200 dark:bg-slate-700'>
                   {headerGroups.map((headerGroup: any) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                       {headerGroup.headers.map((column: any) => (
@@ -214,21 +168,17 @@ const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton 
         </div>
         <div className='md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center'>
           <div className=' flex items-center space-x-3 rtl:space-x-reverse'>
-            <span className=' flex space-x-2  rtl:space-x-reverse items-center'>
-              <span className=' text-sm font-medium text-slate-600 dark:text-slate-300'>Go</span>
-              <span>
-                <input
-                  type='number'
-                  className=' form-control py-2'
-                  defaultValue={pageIndex + 1}
-                  onChange={(e) => {
-                    const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0;
-                    gotoPage(pageNumber);
-                  }}
-                  style={{ width: '50px' }}
-                />
-              </span>
-            </span>
+            <select
+              className='form-control py-2 w-max'
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              {[10, 25, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
             <span className='text-sm font-medium text-slate-600 dark:text-slate-300'>
               Page
               <span>
@@ -240,16 +190,24 @@ const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton 
             <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
               <button
                 className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => gotoPage(0)}
+                disabled={!canPreviousPage}
+              >
+                <Icon icon='heroicons:chevron-double-left-solid' />
+              </button>
+            </li>
+            <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+              <button
+                className={` ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
-                <Icon icon='heroicons-outline:chevron-left' />
+                Prev
               </button>
             </li>
             {pageOptions.map((page: any, pageIdx: any) => (
               <li key={pageIdx}>
                 <button
-                  // href='#'
                   aria-current='page'
                   className={` ${
                     pageIdx === pageIndex
@@ -262,20 +220,30 @@ const Table = ({ title, dataTable, columnsTable, isSelection, handleTableButton 
                 </button>
               </li>
             ))}
-            <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+            <li className='text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
               <button
                 className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >
-                <Icon icon='heroicons-outline:chevron-right' />
+                Next
+              </button>
+            </li>
+            <li className='text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180'>
+              <button
+                onClick={() => gotoPage(pageCount - 1)}
+                disabled={!canNextPage}
+                className={` ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                <Icon icon='heroicons:chevron-double-right-solid' />
               </button>
             </li>
           </ul>
         </div>
+        {/*end*/}
       </Card>
     </>
   );
 };
 
-export default memo(Table);
+export default Table;
